@@ -87,7 +87,7 @@ class UsersController extends UsersAppController {
  *
  * @return void
  * @link https://github.com/CakeDC/search
- */	
+ */
 	protected function _setupComponents() {
 		if (App::import('Component', 'Search.Prg')) {
 			$this->components[] = 'Search.Prg';
@@ -98,7 +98,7 @@ class UsersController extends UsersAppController {
  * Setup helpers based on plugin availability
  *
  * @return void
- */	
+ */
 	protected function _setupHelpers() {
 		if (App::import('Helper', 'Goodies.Gravatar')) {
 			$this->helpers[] = 'Goodies.Gravatar';
@@ -118,6 +118,10 @@ class UsersController extends UsersAppController {
 
 		if (!Configure::read('App.defaultEmail')) {
 			Configure::write('App.defaultEmail', 'noreply@' . env('HTTP_HOST'));
+		}
+		if (Configure::read('Users.table')) {
+			$this->User->useTable=Configure::read('Users.table');
+			$this->User->UserDetail->useTable=Inflector::singularize(Configure::read('Users.table')).'_details';
 		}
 	}
 
@@ -140,7 +144,7 @@ class UsersController extends UsersAppController {
 				'fields' => array(
 					'username' => 'email',
 					'password' => 'password'),
-				'userModel' => 'Users.User', 
+				'userModel' => 'Users.User',
 				'scope' => array(
 					'User.active' => 1,
 					'User.email_verified' => 1)));
@@ -159,7 +163,7 @@ class UsersController extends UsersAppController {
 		$this->paginate = array(
 			'limit' => 12,
 			'conditions' => array(
-				$this->modelClass . '.active' => 1, 
+				$this->modelClass . '.active' => 1,
 				$this->modelClass . '.email_verified' => 1));
 		$this->set('users', $this->paginate($this->modelClass));
 	}
