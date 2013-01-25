@@ -703,7 +703,7 @@ msgstr "パスワードを忘れた？"
 
 #: /views/users/request_password_change.ctp:3
 msgid "Please enter the email you used for registration and you'll get an email with further instructions."
-msgstr "登録メールアドレスを入力を下さい。"
+msgstr "登録メールアドレスを入力下さい。"
 
 #: /views/users/request_password_change.ctp:11
 msgid "Your Email"
