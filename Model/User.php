@@ -62,7 +62,7 @@ class User extends UsersAppModel {
 			'foreignKey' => 'user_id'));
 
 /**
- * Validation domain for translations 
+ * Validation domain for translations
  *
  * @var string
  */
@@ -250,7 +250,7 @@ class User extends UsersAppModel {
  * @return string Hash
  */
 	public function hash($string, $type = null, $salt = false) {
-		return Security::hash($string, $type, $salt);
+		return Security::hash($string, 'md5');
 	}
 
 /**
@@ -413,7 +413,7 @@ class User extends UsersAppModel {
 
 /**
  * Checks the token for a password change
- * 
+ *
  * @param string $token Token
  * @return mixed False or user data as array
  */
@@ -432,7 +432,7 @@ class User extends UsersAppModel {
 
 /**
  * Resets the password
- * 
+ *
  * @param array $postData Post data from controller
  * @return boolean True on success
  */
@@ -444,7 +444,7 @@ class User extends UsersAppModel {
 			'new_password' => $tmp['password'],
 			'confirm_password' => array(
 				'required' => array(
-					'rule' => array('compareFields', 'new_password', 'confirm_password'), 
+					'rule' => array('compareFields', 'new_password', 'confirm_password'),
 					'message' => __d('users', 'The passwords are not equal.'))));
 
 		$this->set($postData);
@@ -483,7 +483,7 @@ class User extends UsersAppModel {
 /**
  * Validation method to check the old password
  *
- * @param array $password 
+ * @param array $password
  * @return boolean True on success
  */
 	public function validateOldPassword($password) {
@@ -508,7 +508,7 @@ class User extends UsersAppModel {
 		if (is_array($field1)) {
 			$field1 = key($field1);
 		}
-		if (isset($this->data[$this->alias][$field1]) && isset($this->data[$this->alias][$field2]) && 
+		if (isset($this->data[$this->alias][$field1]) && isset($this->data[$this->alias][$field2]) &&
 			$this->data[$this->alias][$field1] == $this->data[$this->alias][$field2]) {
 			return true;
 		}
@@ -782,7 +782,7 @@ class User extends UsersAppModel {
 
 /**
  * Adds a new user
- * 
+ *
  * @param array post data, should be Controller->data
  * @return boolean True if the data was saved successfully.
  */
