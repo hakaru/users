@@ -34,6 +34,20 @@ class UserDetailsController extends UsersAppController {
 	public $helpers = array('Html', 'Form');
 
 /**
+ * Components
+ *
+ * @var array
+ */
+	public $components = array(
+		'Auth',
+		'Session',
+		'Cookie',
+		'Paginator',
+		'Security',
+		'Search.Prg',
+	);
+
+/**
  * Index
  *
  * @return void
@@ -43,7 +57,7 @@ class UserDetailsController extends UsersAppController {
 			'contain' => array(),
 			'conditions' => array(
 				'UserDetail.user_id' => $this->Auth->user('id'),
-				'UserDetail.field LIKE' => 'user.%'),
+				'UserDetail.field LIKE' => 'User.%'),
 			'order' => 'UserDetail.position DESC'));
 		$this->set('user_details', $user_details);
 	}
