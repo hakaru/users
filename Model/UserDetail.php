@@ -48,6 +48,12 @@ class UserDetail extends UsersAppModel {
 	public $sectionSchema = array();
 
 /**
+ * foreign key name
+ *
+ */
+	protected $foreign_key_name='user_id';
+
+/**
  * Constructor
  *
  * @param string $id ID
@@ -59,9 +65,12 @@ class UserDetail extends UsersAppModel {
 		if (empty($userClass)) {
 			$userClass = 'Users.User';
 		}
+		if (Configure::read('Users.table')) {
+			$this->foreign_key_name =Inflector::singularize(Configure::read('Users.table')).'_id';
+		}
 		$this->belongsTo['User'] = array(
 			'className' => $userClass,
-			'foreignKey' => 'user_id');
+			'foreignKey' => $this->foreign_key_name);
 		parent::__construct($id, $table, $ds);
 	}
 
@@ -128,7 +137,7 @@ class UserDetail extends UsersAppModel {
 		$data = array();
 		foreach ($entries as $entry) {
 			$data[$this->alias] = $entry;
-			$data[$this->alias]['user_id'] = $userId;
+			$data[$this->alias][$this->foreign_key_name] = $userId;
 			$data[$this->alias]['position'] = $i++;
 			$this->create();
 			$this->save($data);
@@ -144,10 +153,9 @@ class UserDetail extends UsersAppModel {
  */
 	public function getSection($userId = null, $section = null) {
 		$conditions = array(
-			"{$this->alias}.user_id" => $userId);
-
+			"{$this->alias}.$this->foreign_key_name" => $userId);
 		if (!is_null($section)) {
-			$conditions["{$this->alias}.field LIKE"] = $section . '.%'; 
+			$conditions["{$this->alias}.field LIKE"] = $section . '.%';
 		}
 
 		$results = $this->find('all', array(
@@ -180,7 +188,7 @@ class UserDetail extends UsersAppModel {
 
 /**
  * Save details for named section
- * 
+ *
  * @var string $userId User ID
  * @var array $data Data
  * @var string $section Section name
@@ -223,12 +231,12 @@ class UserDetail extends UsersAppModel {
 						$userDetail = $this->find('first', array(
 							'recursive' => -1,
 							'conditions' => array(
-								'user_id' => $userId,
+								$this->foreign_key_name => $userId,
 								'field' => $field),
 							'fields' => array('id', 'field')));
 						if (empty($userDetail)) {
 							$this->create();
-							$newUserDetail[$model]['user_id'] = $userId;
+							$newUserDetail[$model][$this->foreign_key_name] = $userId;
 						} else {
 							$newUserDetail[$model]['id'] = $userDetail[$this->alias]['id'];
 						}
@@ -246,8 +254,8 @@ class UserDetail extends UsersAppModel {
 					if (!empty($userId)) {
 						if ($model == 'User') {
 							$toSave[$model]['id'] = $userId;
-						} elseif ($this->{$model}->hasField('user_id')) {
-							$toSave[$model]['user_id'] = $userId;
+						} elseif ($this->{$model}->hasField($this->foreign_key_name)) {
+							$toSave[$model][$this->foreign_key_name] = $userId;
 						}
 					}
 					$this->{$model}->save($toSave, false);

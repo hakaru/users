@@ -51,15 +51,7 @@ class User extends UsersAppModel {
  */
 	public $displayField = 'username';
 
-/**
- * hasMany associations
- *
- * @var array
- */
-	public $hasMany = array(
-		'UserDetail' => array(
-			'className' => 'Users.UserDetail',
-			'foreignKey' => 'user_id'));
+
 
 /**
  * Validation domain for translations
@@ -111,6 +103,22 @@ class User extends UsersAppModel {
 			'message' => 'You must agree to the terms of use.'));
 
 /**
+ * hasMany associations
+ *
+ * @var array
+ */
+	public $hasMany = array(
+			'UserDetail' => array(
+					'className' => 'Users.UserDetail',
+					'foreignKey' => 'skill_user_id'));
+
+/**
+ * foreign key name
+ *
+ */
+	public $foreign_key_name='user_id';
+
+/**
  * Constructor
  *
  * @param string $id ID
@@ -121,6 +129,12 @@ class User extends UsersAppModel {
 		$this->_setupBehaviors();
 		$this->_setupValidation();
 		parent::__construct($id, $table, $ds);
+		if (Configure::read('Users.table')) {
+			$this->foreignKey=Inflector::singularize(Configure::read('Users.table')).'_id';
+		}
+		$this->hasMany['UserDetail'] = array(
+			'className' => 'Users.UserDetail',
+			'foreignKey' => $this->foreign_key_name);
 	}
 
 /**
