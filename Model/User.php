@@ -102,21 +102,7 @@ class User extends UsersAppModel {
 			'rule' => array('custom','[1]'),
 			'message' => 'You must agree to the terms of use.'));
 
-/**
- * hasMany associations
- *
- * @var array
- */
-	public $hasMany = array(
-			'UserDetail' => array(
-					'className' => 'Users.UserDetail',
-					'foreignKey' => 'skill_user_id'));
 
-/**
- * foreign key name
- *
- */
-	public $foreign_key_name='user_id';
 
 /**
  * Constructor
@@ -130,11 +116,15 @@ class User extends UsersAppModel {
 		$this->_setupValidation();
 		parent::__construct($id, $table, $ds);
 		if (Configure::read('Users.table')) {
-			$this->foreignKey=Inflector::singularize(Configure::read('Users.table')).'_id';
+			$this->hasMany['UserDetail'] = array(
+				'className' => 'Users.UserDetail',
+				'foreignKey' => Inflector::singularize(Configure::read('Users.table')).'_id');
+			debug($this->hasMany);
+		}else{
+			$this->hasMany['UserDetail'] = array(
+					'className' => 'Users.UserDetail',
+					'foreignKey' => 'user_id');
 		}
-		$this->hasMany['UserDetail'] = array(
-			'className' => 'Users.UserDetail',
-			'foreignKey' => $this->foreign_key_name);
 	}
 
 /**
