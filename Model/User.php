@@ -119,7 +119,6 @@ class User extends UsersAppModel {
 			$this->hasMany['UserDetail'] = array(
 				'className' => 'Users.UserDetail',
 				'foreignKey' => Inflector::singularize(Configure::read('Users.table')).'_id');
-			debug($this->hasMany);
 		}else{
 			$this->hasMany['UserDetail'] = array(
 					'className' => 'Users.UserDetail',
